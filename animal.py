@@ -1,4 +1,6 @@
-from Base import Status, position, Map
+import uuid
+
+from Base import AnimalStatus, position
 
 
 class Animal(object):
@@ -6,21 +8,21 @@ class Animal(object):
     动物类，游戏中所有动物的父类，这里会定义一些所有动物都共有的属性和方法
     """
     pos: position
-    status: Status
-    map: Map
+    status: AnimalStatus
+    id: uuid
 
-    def __int__(self, pos, map):
+    def __int__(self, pos):
         """
         创建一个动物，我们首先需要给他一个初始的位置
         然后让它活着（alive)
 
-        :param pos: 初始位置
-        :param map: 地图
+        :param pos: 位置
         :return:
         """
         self.pos = pos
-        self.map = map
-        self.status = Status.alive
+        self.status = AnimalStatus.alive
+        #随机生成一个id
+        self.id = uuid.uuid1()
 
     def move(self, delta_x: int, delta_y: int):
         """
@@ -32,13 +34,14 @@ class Animal(object):
         """
         self.pos.move(delta_x, delta_y)
 
+
     def wasHunted(self):
         """
         动物被天敌吃掉了（大象吃老虎，老虎吃老鼠，老鼠吃大象。。。）
         这时候它的状态就从alive变成了dead
         :return:
         """
-        self.status = Status.dead
+        self.status = AnimalStatus.dead
 
     def getTrapped(self):
         """
@@ -46,4 +49,4 @@ class Animal(object):
 
         :return:
         """
-        self.status = Status.dead
+        self.status = AnimalStatus.dead
