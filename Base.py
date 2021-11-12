@@ -8,6 +8,10 @@ from Global import animal_dict
 class AnimalStatus(Enum):
     """
     描述存活的状态
+
+    Attributes:
+        alive:1
+        dead:0
     """
     alive = 1
     dead = 0
@@ -15,7 +19,13 @@ class AnimalStatus(Enum):
 
 class GridProperty(Enum):
     """
-    描述地块的属性
+    Definitions of grid type
+
+    Attributes:
+        land: 0. Normal grid,all kinds of animals can stay here.
+        river: 1.Only animals which able to swim can stay here.
+        trap:2. Animal will die if step here.
+        target:3. Winner!
     """
     land = 0
     river = 1
@@ -56,15 +66,33 @@ class position:
 
 
 class Grid:
+    """
+    地块，地图的基本组成单元
+
+    Attributes:
+        property:类型
+        OwnerId:占据这个地块的动物id
+    """
     property: GridProperty
     OwnerId: uuid
 
     def __init__(self, property: GridProperty):
+        """
+        Grid构造函数
+
+        Args:
+            property: type of this grid
+        """
         self.property = property
         self.OwnerId = None
 
     @classmethod
     def create_default_grid(cls):
+        """
+        构造默认Grid(land)
+        Returns:
+
+        """
         return cls(GridProperty.land)
 
     def isOccupiedBy(self, animal_uuid: uuid):
@@ -84,7 +112,13 @@ class Grid:
 
 class Map:
     """
-    地图
+    地图类
+
+    Attributes:
+        rows:行数，M
+        coloumns:列数，N
+        gridmatrix:grid矩阵，地图就是由MXN个grid组成的矩阵
+        num_of_traps: 陷阱数量
     """
     rows: int
     columns: int
@@ -115,12 +149,12 @@ class Map:
         生成默认地图，属于Map类的另一种构造函数
         默认地图尺寸是7x9，默认河流为一块3X3的区域，左上点在（2，3）(像素坐标系，从0开始计算)
 
-        :return:
+        :return:a default map
         """
         default_rows = 7
         default_cols = 9
 
-        # 生成7x9的grid matrix
+        # 生成7x9的grid matrix，首先默认都是land
         grids = [[Grid.create_default_grid() for i in range(default_cols)] for i in range(default_rows)]
 
         # 设置river
@@ -140,7 +174,7 @@ class Map:
         for i in range(num_traps):
             while True:
                 trap = position(random.randint(0, default_cols - 1), random.randint(0, default_rows - 1))
-                # 保证陷阱不在河里面
+                # 保证陷阱不在河里面，也不与target重合
                 if grids[trap.y][trap.x].property == GridProperty.land:
                     grids[trap.y][trap.x].property = GridProperty.trap
                     break
@@ -150,6 +184,7 @@ class Map:
     def put_animal(self, pos: position, animal_id: uuid):
         """
         在地图上放置动物，起始就是修改相应位置的grid的OwnerId
+
         :param pos:放置的位置
         :param animal_id:动物的id
         :return:
@@ -168,5 +203,3 @@ class Map:
                 grid_info += "(" + str(j) + "," + str(i) + ")" + self.gridmatrix[i][j].detail()
             grid_info += "\n"
         print(grid_info)
-
-    animal_dict = {}

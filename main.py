@@ -3,6 +3,7 @@ from Global import animal_dict
 from tiger import Tiger
 
 if __name__ == "__main__":
+    # 生成默认地图
     map1 = Map.generate_default_map()
     map1.detail()
 
@@ -21,4 +22,5 @@ if __name__ == "__main__":
     map1.put_animal(position(3, 1), tiger_1.id)
     map1.put_animal(position(8, 6), tiger_2.id)
 
+    #打印此刻map信息，看看动物的位置是否正确
     map1.detail()

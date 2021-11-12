@@ -6,6 +6,13 @@ from Base import AnimalStatus, position
 class Animal(object):
     """
     动物类，游戏中所有动物的父类，这里会定义一些所有动物都共有的属性和方法
+
+    Attributes:
+        type:物种
+        pos：当前位置
+        status:是否存活
+        Combat_Effectiveness：战斗值，同一个物种不同个体，通过比较战斗值高低决胜
+        id:每个动物的id，用于从花名册中查询
     """
     type: str
     pos: position
@@ -40,6 +47,7 @@ class Animal(object):
         """
         动物被天敌吃掉了（大象吃老虎，老虎吃老鼠，老鼠吃大象。。。）
         这时候它的状态就从alive变成了dead
+
         :return:
         """
         self.status = AnimalStatus.dead
@@ -53,6 +61,12 @@ class Animal(object):
         self.status = AnimalStatus.dead
 
     def common_detail(self):
+        """
+        打印动物共有属性
+
+        Returns:
+
+        """
         print("type:" + self.type)
         print("id:" + str(self.id))
         print("pos:" + self.pos.detail())
