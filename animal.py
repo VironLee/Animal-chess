@@ -9,9 +9,10 @@ class Animal(object):
     """
     pos: position
     status: AnimalStatus
+    Combat_Effectiveness: float
     id: uuid
 
-    def __int__(self, pos):
+    def __init__(self, pos):
         """
         创建一个动物，我们首先需要给他一个初始的位置
         然后让它活着（alive)
@@ -21,7 +22,7 @@ class Animal(object):
         """
         self.pos = pos
         self.status = AnimalStatus.alive
-        #随机生成一个id
+        # 随机生成一个id
         self.id = uuid.uuid1()
 
     def move(self, delta_x: int, delta_y: int):
@@ -33,7 +34,6 @@ class Animal(object):
         :return:
         """
         self.pos.move(delta_x, delta_y)
-
 
     def wasHunted(self):
         """
@@ -50,3 +50,9 @@ class Animal(object):
         :return:
         """
         self.status = AnimalStatus.dead
+
+    def common_detail(self):
+        print("id:"+str(self.id))
+        print("pos:"+self.pos.detail())
+        print("combat effectiveness:"+str(self.Combat_Effectiveness))
+        print("-----------------------------------------\n")

@@ -49,13 +49,15 @@ class position:
         self.x = self.x + delta_x
         self.y = self.y + delta_y
 
+    def detail(self) -> str:
+        return "(" + str(self.x) + "," + str(self.y) + ")"
+
 
 class Grid:
     property: GridProperty
     OwnerId: uuid
 
     def __init__(self, property: GridProperty):
-
         self.property = property
         self.OwnerId = None
 
