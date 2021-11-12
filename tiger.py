@@ -11,9 +11,9 @@ class Tiger(Animal):
     def __init__(self,pos):
         Animal.__init__(self,pos)
         self.Combat_Effectiveness=random.uniform(1,2)
+        self.type="tiger"
 
     def detail(self):
-        print("Type:Tiger")
         self.common_detail()
     # def move(self,des_x:int,des_y:int):
     #

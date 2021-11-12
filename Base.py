@@ -2,6 +2,8 @@ import random
 import uuid
 from enum import Enum
 
+from Global import animal_dict
+
 
 class AnimalStatus(Enum):
     """
@@ -75,7 +77,9 @@ class Grid:
         self.OwnerId = animal_uuid
 
     def detail(self) -> str:
-        return str(self.property.name) + " " + str(self.OwnerId) + "|"
+        if self.OwnerId is None:
+            return str(self.property.name) + " | "
+        return str(self.property.name) + " " + animal_dict[self.OwnerId].type + " | "
 
 
 class Map:
@@ -143,6 +147,15 @@ class Map:
 
         return cls(7, 9, grids)
 
+    def put_animal(self, pos: position, animal_id: uuid):
+        """
+        在地图上放置动物，起始就是修改相应位置的grid的OwnerId
+        :param pos:放置的位置
+        :param animal_id:动物的id
+        :return:
+        """
+        self.gridmatrix[pos.y][pos.x].OwnerId = animal_id
+
     def detail(self):
         """
         打印Map信息
@@ -155,3 +168,5 @@ class Map:
                 grid_info += "(" + str(j) + "," + str(i) + ")" + self.gridmatrix[i][j].detail()
             grid_info += "\n"
         print(grid_info)
+
+    animal_dict = {}

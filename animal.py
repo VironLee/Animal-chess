@@ -7,6 +7,7 @@ class Animal(object):
     """
     动物类，游戏中所有动物的父类，这里会定义一些所有动物都共有的属性和方法
     """
+    type: str
     pos: position
     status: AnimalStatus
     Combat_Effectiveness: float
@@ -52,7 +53,8 @@ class Animal(object):
         self.status = AnimalStatus.dead
 
     def common_detail(self):
-        print("id:"+str(self.id))
-        print("pos:"+self.pos.detail())
-        print("combat effectiveness:"+str(self.Combat_Effectiveness))
+        print("type:" + self.type)
+        print("id:" + str(self.id))
+        print("pos:" + self.pos.detail())
+        print("combat effectiveness:" + str(self.Combat_Effectiveness))
         print("-----------------------------------------\n")
