@@ -2,16 +2,14 @@ import random
 import uuid
 from enum import Enum
 
-from Global import animal_dict
-
 
 class AnimalStatus(Enum):
     """
     描述存活的状态
 
     Attributes:
-        alive:1
-        dead:0
+        alive:存活
+        dead:死亡
     """
     alive = 1
     dead = 0
@@ -22,10 +20,10 @@ class GridProperty(Enum):
     Definitions of grid type
 
     Attributes:
-        land: 0. Normal grid,all kinds of animals can stay here.
-        river: 1.Only animals which able to swim can stay here.
-        trap:2. Animal will die if step here.
-        target:3. Winner!
+        land:  Normal grid,all kinds of animals can stay here.
+        river: Only animals which able to swim can stay here.
+        trap: Animal will die if step here.
+        target: winner who first arrive here!
     """
     land = 0
     river = 1
@@ -111,7 +109,7 @@ class Grid:
     def detail(self) -> str:
         if self.OwnerId is None:
             return str(self.property.name) + " | "
-        return str(self.property.name) + " " + animal_dict[self.OwnerId].type + " | "
+        return str(self.property.name) + " " + self.OwnerId + " | "
 
 
 class Map:
@@ -215,15 +213,25 @@ class Map:
         target_count = 0
         for i in range(self.rows):
             for j in range(self.columns):
+
+                # land
                 if self.gridmatrix[i][j].property == GridProperty.land:
                     self.landsArray.append(position(j, i))
+
+                # river
                 elif self.gridmatrix[i][j].property == GridProperty.river:
                     self.riverArray.append(position(j, i))
+
+                # trap
                 elif self.gridmatrix[i][j].property == GridProperty.trap:
                     self.trapsArray.append(position(j, i))
+
+                # 第一个target
                 elif self.gridmatrix[i][j].property == GridProperty.target and target_count == 0:
                     self.target = position(j, i)
                     target_count += 1
+
+                # target只能有一个，所以第二个开始都视为land
                 elif self.gridmatrix[i][j].property == GridProperty.target and target_count > 0:
                     self.gridmatrix[i][j].property = GridProperty.land
                     self.landsArray.append(position(j, i))
@@ -233,11 +241,5 @@ class Map:
         """
         打印Map信息
         """
-        print("The map is " + str(self.rows) + "x" + str(self.columns))
-        # print("num of trap:" + str(self.num_of_traps))
-        # grid_info = ""
-        # for i in range(self.rows):
-        #     for j in range(self.columns):
-        #         grid_info += "(" + str(j) + "," + str(i) + ")" + self.gridmatrix[i][j].detail()
-        #     grid_info += "\n"
-        # print(grid_info)
+        print("The map size is " + str(self.rows) + "x" + str(self.columns))
+        print("owns " + len(self.trapsArray) + " traps and " + len(self.riverArray) + " river")

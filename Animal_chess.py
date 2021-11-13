@@ -16,20 +16,22 @@ def generate_random_animals(gameMap: Map) -> dict:
 
     """
 
-    temp_lands = copy.deepcopy(gameMap.landsArray)#深拷贝，防止随机过程对原来的数据产生影响
-    random.shuffle(temp_lands)# 将tempsArray随机打乱
+    temp_lands = copy.deepcopy(gameMap.landsArray)  # 深拷贝，防止随机过程对原来的数据产生影响
+    random.shuffle(temp_lands)  # 将tempsArray随机打乱
 
-    #初始动物位置只能在land上
+    # 初始动物位置只能在land上
     num_animals = random.randint(1, gameMap.rows * gameMap.columns - len(gameMap.landsArray) - 1)
     animal_dict = {}
+
+    #todo:须新增其他动物的自动生成逻辑
     for i in range(0, num_animals):
         pos = temp_lands[i]
         tiger = Tiger(pos)
 
-        #讲生成的老虎加入花名册
+        # 讲生成的老虎加入花名册
         animal_dict[tiger.id] = tiger
 
-        #在地图相应位置放置动物
+        # 在地图相应位置放置动物
         gameMap.put_animal(pos, tiger.id)
 
     return animal_dict
@@ -67,7 +69,7 @@ class Animal_chess:
 
         """
         gameMap = Map.generate_default_map()
-        animal_dict= generate_random_animals(gameMap)
+        animal_dict = generate_random_animals(gameMap)
         return cls(gameMap, animal_dict)
 
     def game_situation(self):
@@ -76,16 +78,34 @@ class Animal_chess:
         Returns:
 
         """
+
+        #存储整张地图的信息
         situation = ""
+
+        #存储每一个grid的信息
+        block_str = [["" for i in range(self.gameMap.columns)] for i in range(self.gameMap.rows)]
+
+        #注意，这里采用的是逐列遍历，计算每一列的最大宽度用于对齐
+        for j in range(self.gameMap.columns):
+            width = 0
+            for i in range(self.gameMap.rows):
+                if self.gameMap.gridmatrix[i][j].OwnerId is None:
+                    block_str[i][j] = self.gameMap.gridmatrix[i][j].property.name + " "
+                else:
+                    block_str[i][j] = self.gameMap.gridmatrix[i][j].property.name + " " + "\'" + self.animal_dict[
+                        self.gameMap.gridmatrix[i][j].OwnerId].type + "\'"
+
+                #更新这一列的最大宽度
+                width = max(width, len(block_str[i][j]))
+
+            #按照计算出来的最大宽度去对齐这一列的所有格子
+            for k in range(self.gameMap.rows):
+                block_str[k][j] = block_str[k][j].ljust(width) + " | "
+
+        #所有格子逐行逐列拼接到situation中打印出来
         for i in range(self.gameMap.rows):
             for j in range(self.gameMap.columns):
-                if self.gameMap.gridmatrix[i][j].OwnerId is None:
-                    #str.ljust(width) :左边对齐字符，对齐后的总长度是width
-                    situation += (self.gameMap.gridmatrix[i][j].property.name.ljust(14) + " | ")
-                else:
-                    situation += (self.gameMap.gridmatrix[i][j].property.name + " " + "\'" + self.animal_dict[
-                        self.gameMap.gridmatrix[i][j].OwnerId].type + "\'").ljust(14) + " | "
+                situation += block_str[i][j]
             situation += "\n"
 
         print(situation)
-
