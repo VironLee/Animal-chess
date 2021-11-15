@@ -17,3 +17,5 @@ class Elephant(Animal):
 
     def move(self, delta_x: int, delta_y: int):
         return super(Animal).move(delta_x, delta_y)
+
+    print("1")
