@@ -24,6 +24,9 @@ class Tiger(Animal):
         """
         self.common_detail()
 
+    def move(self, delta_x: int, delta_y: int):
+        return super(Animal).move(delta_x, delta_y)
+    
     # def move(self,des_x:int,des_y:int):
     #
     # def prey(self,animal)->bool:
