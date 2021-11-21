@@ -1,7 +1,8 @@
 import copy
 import random
 
-from Base import Map,position
+from Base import Grid, GridProperty, Map, position
+from animal import Animal
 from elephant import Elephant
 from rat import Rat
 from tiger import Tiger
@@ -25,11 +26,10 @@ def generate_random_animals(gameMap: Map) -> dict:
     animal_dict = {}
 
     # todo:须新增其他动物的自动生成逻辑
-    a = random.randint(1, len(temp_lands) - 2) #随机生成老虎数量
-    for i in range(0, a): #确定老虎在字典中的位置
+    a = random.randint(1, len(temp_lands) - 2)  # 随机生成老虎数量
+    for i in range(0, a):  # 确定老虎在字典中的位置
         pos = temp_lands[i]
-        P=position(1,1)
-        tiger = Tiger(P)
+        tiger = Tiger(pos)
 
         # 每执行一次循环，将生成的老虎加入花名册
         # id作为key,动物对象作为value
@@ -38,8 +38,8 @@ def generate_random_animals(gameMap: Map) -> dict:
         # 在地图相应位置放置动物
         gameMap.put_animal(pos, tiger.id)
 
-    b = random.randint(1, len(temp_lands) - len(animal_dict)) #生成老鼠数量
-    for j in range(a, a+b): #确定老鼠在字典中的位置
+    b = random.randint(1, len(temp_lands) - len(animal_dict))  # 生成老鼠数量
+    for j in range(a, a + b):  # 确定老鼠在字典中的位置
         pos = temp_lands[j]
         rat = Rat(pos)
 
@@ -47,9 +47,9 @@ def generate_random_animals(gameMap: Map) -> dict:
 
         gameMap.put_animal(pos, rat.id)
 
-    c = random.randint(1, len(temp_lands) - len(animal_dict)) #生成大象数量
+    c = random.randint(1, len(temp_lands) - len(animal_dict))  # 生成大象数量
 
-    for k in range(b, b+c):
+    for k in range(b, b + c):
         pos = temp_lands[k]
         elephant = Elephant(pos)
 
@@ -57,8 +57,9 @@ def generate_random_animals(gameMap: Map) -> dict:
 
         gameMap.put_animal(pos, elephant.id)
 
-    print(a, b, c) #打印三种动物数量
+    print(a, b, c)  # 打印三种动物数量
     return animal_dict
+
 
 class Animal_chess:
     """
@@ -132,3 +133,81 @@ class Animal_chess:
             situation += "\n"
 
         print(situation)
+
+    def VitalCheck(self, id):
+        obj: Animal
+        rival: Animal
+        des: Grid
+        org: Grid
+        self.id = id
+
+        # 输入一个id，生成其对应的动物对象
+        obj = self.animal_dict.get(self.id)
+        
+        # 生成动物对象所在地的地块对象
+        org_x = obj.pos.gotX()
+        org_y = obj.pos.gotY()
+        org = Map.gridmatrix[org_x][org_y]
+
+        # 生成目的地的地块对象
+        obj.pos.move()
+        des_x = obj.pos.gotX()
+        des_y = obj.pos.gotY()
+        des = Map.gridmatrix[des_x][des_y]
+
+        # 老鼠类的判定方法
+        if obj.type == "rat":
+
+            # 目标点属性不为0，invalid的情况
+            if des.property:
+                if des.property == GridProperty.trap:
+                    obj.getTrapped()
+
+                    ### 下边这行用哪种表达方式可行？
+                    Map.gridmatrix[des_x][des_y].OwnerId = None
+                    # org.OwnerId = None
+
+                # 掉河里的状态没想好，暂定返回空值
+                if des.property == GridProperty.river:
+                    return None
+            
+            # 目标点属性为0，valid的情况，先清除原有信息
+            else:
+                org.OwnerId = None
+
+                # 恰好移动到目标点，结束游戏
+                if des.property == GridProperty.target:
+                    Animal_chess.Endthegame()
+                    
+                # 移动到空地，更新地块占领信息
+                if des.OwnerId == None:
+                    des.isOccupiedBy(obj.id)
+                    
+                # 不为空地，通过占有者信息判断状态
+                if des.OwnerId:
+
+                    # 生成占有地块的动物对象
+                    rival = self.animal_dict.get(des.OwnerId)
+
+                    if rival.type == "tiger":
+                        obj.wasHunted()
+                        
+                    if rival.type == "elephant":
+                        rival.wasHunted()
+                        des.isOccupiedBy(obj.id)
+                    
+                    # 同类打架看战力，战力小的淘汰
+                    if rival.type == "rat":
+                        if obj.Combat_Effectiveness > rival.Combat_Effectiveness:
+                            rival.wasHunted()
+                            des.isOccupiedBy(obj.id)
+
+                        if obj.Combat_Effectiveness < rival.Combat_Effectiveness:
+                            obj.wasHunted()
+                        
+                        # 战力相同一起卒，更新地块信息
+                        if obj.Combat_Effectiveness == rival.Combat_Effectiveness:
+                            obj.wasHunted()
+                            rival.wasHunted()
+                            des.OwnerId = None
+                        
