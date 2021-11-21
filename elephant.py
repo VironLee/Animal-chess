@@ -15,7 +15,9 @@ class Elephant(Animal):
     def detail(self):
         self.common_detail()
 
-    def move(self, delta_x: int, delta_y: int):
-        return super(Animal).move(delta_x, delta_y)
-
-    print("1")
+    def move(self, delta_x, delta_y):
+        self.pos.move(delta_x, delta_y)
+    
+    def des(self):
+        x = self.pos.gotX()
+        y = self.pos.gotY()
