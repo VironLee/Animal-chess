@@ -163,7 +163,7 @@ class Animal_chess:
                 if des.property == GridProperty.trap:
                     obj.getTrapped()
 
-                    ### 下边这行用哪种表达方式可行？
+                    ### 下边这行用哪种表达方式可行？Answer:按照No.150行的语句来看，这两种写法是等价的
                     Map.gridmatrix[des_x][des_y].OwnerId = None
                     # org.OwnerId = None
 
@@ -176,13 +176,14 @@ class Animal_chess:
                 org.OwnerId = None
 
                 # 恰好移动到目标点，结束游戏
-                if des.property == GridProperty.target:
+                #TODO：Target的value好像是3，不是0，是进不了这个else分支的
+                if des.property == GridProperty.target: #TODO:即使到了Target也要先更新信息，再宣告游戏结束;完成Endthegame()的实现
                     Animal_chess.Endthegame()
                     
                 # 移动到空地，更新地块占领信息
                 if des.OwnerId == None:
                     des.isOccupiedBy(obj.id)
-                    
+
                 # 不为空地，通过占有者信息判断状态
                 if des.OwnerId:
 
@@ -206,8 +207,10 @@ class Animal_chess:
                             obj.wasHunted()
                         
                         # 战力相同一起卒，更新地块信息
+                        # TODO：这里可以引入随机数去决定战斗结果
                         if obj.Combat_Effectiveness == rival.Combat_Effectiveness:
                             obj.wasHunted()
                             rival.wasHunted()
                             des.OwnerId = None
-                        
+
+        #TODO：其他动物类的判定方法(封装）
