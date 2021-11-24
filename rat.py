@@ -15,9 +15,4 @@ class Rat(Animal):
 
     def move(self, delta_x, delta_y):
         self.pos.move(2 * delta_x, 2 * delta_y)
-
-    # TODO:Question:这个方法的用处？
-    def des(self):
-        x = self.pos.gotX()
-        y = self.pos.gotY()
-
+        

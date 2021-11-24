@@ -26,12 +26,3 @@ class Tiger(Animal):
 
     def move(self, delta_x: int, delta_y: int):
         self.pos.move(delta_x, delta_y)
-
-    # TODO:Question:这个方法的用处？
-    def des(self):
-        x = self.pos.gotX()
-        y = self.pos.gotY()
-    
-    # def move(self,des_x:int,des_y:int):
-    #
-    # def prey(self,animal)->bool:

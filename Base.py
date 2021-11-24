@@ -65,14 +65,7 @@ class position:
 
     def detail(self) -> str:
         return "(" + str(self.x) + "," + str(self.y) + ")"
-
-    def gotX(self):
-        return self.x
     
-    def gotY(self):
-        return self.y
-        
-        
 
 class Grid:
     """
