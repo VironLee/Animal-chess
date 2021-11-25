@@ -17,14 +17,14 @@ def animal_move_test(game: Animal_chess):
 def animal_battle_test(game: Animal_chess):
     score = 0
     score += int(game.battle_test("rat", "rat", 1))
-    score += int(game.battle_test("rat", "tiger", 2))
-    score += int(game.battle_test("rat", "elephant", 3))
-    score += int(game.battle_test("tiger", "rat", 4))
-    score += int(game.battle_test("tiger", "tiger", 5))
-    score += int(game.battle_test("tiger", "elephant", 6))
-    score += int(game.battle_test("elephant", "rat", 7))
-    score += int(game.battle_test("elephant", "tiger", 8))
-    score += int(game.battle_test("elephant", "elephant", 9))
+    score += int(game.battle_test("rat", "tiger", 2))*10
+    score += int(game.battle_test("rat", "elephant", 3))*100
+    score += int(game.battle_test("tiger", "rat", 4))*1000
+    score += int(game.battle_test("tiger", "tiger", 5))*10000
+    score += int(game.battle_test("tiger", "elephant", 6))*100000
+    score += int(game.battle_test("elephant", "rat", 7))*1000000
+    score += int(game.battle_test("elephant", "tiger", 8))*10000000
+    score += int(game.battle_test("elephant", "elephant", 9))*100000000
 
     if score == 111111111:
         print("Congradulation!You have completed battle fucntions!")
