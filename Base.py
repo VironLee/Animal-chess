@@ -15,6 +15,15 @@ class AnimalStatus(Enum):
     dead = 0
 
 
+class BattleResult(Enum):
+    """
+    描述战斗的结果
+    win or loss
+    """
+    win: 1
+    loss: 0
+
+
 class GridProperty(Enum):
     """
     Definitions of grid type
@@ -65,7 +74,7 @@ class position:
 
     def detail(self) -> str:
         return "(" + str(self.x) + "," + str(self.y) + ")"
-    
+
 
 class Grid:
     """
@@ -159,12 +168,12 @@ class Map:
     def generate_default_map(cls):
         """
         生成默认地图，属于Map类的另一种构造函数
-        默认地图尺寸是7x9，默认河流为一块3X3的区域，左上点在（第2列，第3行）(像素坐标系，从0开始计算)
+        默认地图尺寸是10x10，默认河流为一块3X3的区域，左上点在（第2列，第3行）(像素坐标系，从0开始计算)
 
         :return:a default map
         """
-        default_rows = 7
-        default_cols = 9
+        default_rows = 10
+        default_cols = 10
 
         # 生成7x9的grid matrix，首先默认都是land
         grids = [[Grid.create_default_grid() for i in range(default_cols)] for i in range(default_rows)]
@@ -242,4 +251,4 @@ class Map:
         打印Map信息
         """
         print("The map size is " + str(self.rows) + "x" + str(self.columns))
-        print("owns " + len(self.trapsArray) + " traps and " + len(self.riverArray) + " river")
+        print("owns " + str(len(self.trapsArray)) + " traps and " + str(len(self.riverArray)) + " river")
