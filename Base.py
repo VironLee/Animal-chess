@@ -172,7 +172,7 @@ class Map:
 
         :return:a default map
         """
-        default_rows = 8
+        default_rows = 10
         default_cols = 10
 
         # 生成7x9的grid matrix，首先默认都是land
@@ -200,7 +200,7 @@ class Map:
                     grids[trap.y][trap.x].property = GridProperty.trap
                     break
 
-        return cls(7, 9, grids)
+        return cls(default_rows, default_cols, grids)
 
     def put_animal(self, pos: position, animal_id: uuid):
         """
