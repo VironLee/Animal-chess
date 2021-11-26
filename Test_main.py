@@ -2,7 +2,7 @@ from Animal_chess import Animal_chess
 
 
 def animal_move_test(game: Animal_chess) -> bool:
-    score = 0;
+    score = 0
     score += int(game.move_test("rat", "land", 1))
     score += int(game.move_test("rat", "river", 2) * 10)
     score += int(game.move_test("rat", "trap", 3) * 100)
