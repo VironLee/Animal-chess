@@ -39,7 +39,7 @@ def animal_battle_test(game: Animal_chess) -> bool:
 
 
 if __name__ == "__main__":
-    animal_chess = Animal_chess.create_random_game()
+    animal_chess = Animal_chess.create_test_game()
 
     # TODO:完成Test move:
     if animal_move_test(animal_chess):
