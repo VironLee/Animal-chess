@@ -15,164 +15,34 @@ def calc_battle_result(obj: animal, enemy: animal) -> AnimalStatus:
     if obj.type == enemy.type:
         if obj.Combat_Effectiveness > enemy.Combat_Effectiveness:
             result = BattleResult.win
+            return result
         else:
             result = BattleResult.loss  # 简化规则，主场优势，战斗值一样主场获胜
+            return result
 
     if obj.type == "rat":
         if enemy.type == " tiger":
             result = BattleResult.loss
+            return result
         elif enemy.type == "elephant":
             result = BattleResult.win
+            return result
 
     elif obj.type == "tiger":
         if enemy.type == " elephant":
             result = BattleResult.loss
+            return result
         elif enemy.type == "rat":
             result = BattleResult.win
+            return result
 
     elif obj.type == "elephant":
         if enemy.type == "rat":
             result = BattleResult.loss
+            return result
         elif enemy.type == "tiger":
             result = BattleResult.win
-
-    return result
-
-
-def check_range(game_map: Map, des: position) -> bool:
-    des_x = des.x
-    des_y = des.y
-    row = game_map.rows
-    column = game_map.columns
-
-    if des_x >= column or des_y >= row:
-        return False
-
-    elif des_x < 0 or des_y < 0:
-        return False
-
-    else:
-        return True
-
-
-def check_valid(obj_id: uuid, delta_x: int, delta_y: int) -> int:
-    obj: Animal
-    obj = Animal_chess.animal_dict.get(obj_id)
-
-    # 计算终点坐标
-    des_x = obj.pos.x + delta_x
-    des_y = obj.pos.y + delta_y
-
-    # 通过终点坐标找到地块
-    des = Animal_chess.gameMap.gridmatrix[des_y][des_x]
-
-    # 查询地块属性
-    if des.property == GridProperty.land:
-        return 0
-
-    if des.property == GridProperty.river:
-        return 1
-
-    if des.property == GridProperty.trap:
-        return 2
-
-    if des.property == GridProperty.target:
-        pass
-
-
-def check_owner(obj_id: uuid, delta_x: int, delta_y: int) -> bool:
-    obj: Animal
-    rival: Animal
-
-    obj = Animal_chess.animal_dict.get(obj_id)
-    des_x = obj.pos.x + delta_x
-    des_y = obj.pos.y + delta_y
-    des = Animal_chess.gameMap.gridmatrix[des_y][des_x]
-
-    # 如果有主，找到占领者信息
-    if des.OwnerId:
-        return False
-
-    else:
-        return True
-
-
-def rat_fight(obj_id: uuid, rival_id: uuid) -> bool:
-    rival: Animal
-    obj: Animal
-
-    obj = Animal_chess.animal_dict.get(obj_id)
-    rival = Animal_chess.animal_dict.get(rival_id)
-
-    if rival.type == "tiger":
-        return False
-
-    if rival.type == "elephant":
-        return True
-
-    if rival.type == "rat":
-        if obj.Combat_Effectiveness > rival.Combat_Effectiveness:
-            return True
-
-        if obj.Combat_Effectiveness < rival.Combat_Effectiveness:
-            return False
-
-        # 战力相同一起卒，更新地块信息
-        # TODO：这里可以引入随机数去决定战斗结果
-        if obj.Combat_Effectiveness == rival.Combat_Effectiveness:
-            pass
-
-
-def tiger_fight(obj_id: uuid, rival_id: uuid) -> bool:
-    rival: Animal
-    obj: Animal
-
-    obj = Animal_chess.animal_dict.get(obj_id)
-    rival = Animal_chess.animal_dict.get(rival_id)
-
-    if rival.type == "elephant":
-        return False
-
-    if rival.type == "rat":
-        return True
-
-    if rival.type == "tiger":
-        if obj.Combat_Effectiveness > rival.Combat_Effectiveness:
-            return True
-
-        if obj.Combat_Effectiveness < rival.Combat_Effectiveness:
-            return False
-
-        # 战力相同一起卒，更新地块信息
-        # TODO：这里可以引入随机数去决定战斗结果
-        if obj.Combat_Effectiveness == rival.Combat_Effectiveness:
-            pass
-
-
-def elephant_fight(obj_id: uuid, rival_id: uuid) -> bool:
-    rival: Animal
-    obj: Animal
-
-    obj = Animal_chess.animal_dict.get(obj_id)
-    rival = Animal_chess.animal_dict.get(rival_id)
-
-    if rival.type == "rat":
-        return False
-
-    if rival.type == "tiger":
-        return True
-
-    if rival.type == "elephant":
-        if obj.Combat_Effectiveness > rival.Combat_Effectiveness:
-            return True
-
-        if obj.Combat_Effectiveness < rival.Combat_Effectiveness:
-            return False
-
-        # 战力相同一起卒，更新地块信息
-        # TODO：这里可以引入随机数去决定战斗结果
-        if obj.Combat_Effectiveness == rival.Combat_Effectiveness:
-            pass
+            return result
 
 
 def generate_test_animals(gameMap: Map) -> dict:
@@ -361,6 +231,115 @@ class Animal_chess:
 
         print(situation)
 
+    def check_range(self, game_map: Map, des: position) -> bool:
+        des_x = des.x
+        des_y = des.y
+        row = game_map.rows
+        column = game_map.columns
+
+        if des_x >= column or des_y >= row:
+            return False
+
+        elif des_x < 0 or des_y < 0:
+            return False
+
+        else:
+            return True
+
+    def check_valid(self, obj_id: uuid, delta_x: int, delta_y: int) -> int:
+        obj: Animal
+        obj = self.animal_dict.get(obj_id)
+
+        # 计算终点坐标
+        des_x = obj.pos.x + delta_x
+        des_y = obj.pos.y + delta_y
+
+        # 通过终点坐标找到地块
+        des = self.gameMap.gridmatrix[des_y][des_x]
+
+        # 查询地块属性
+        if des.property == GridProperty.land:
+            return 0
+
+        if des.property == GridProperty.river:
+            return 1
+
+        if des.property == GridProperty.trap:
+            return 2
+
+        if des.property == GridProperty.target:
+            return 3
+
+    def check_owner(self, des_x: int, des_y: int) -> bool:
+        des = self.gameMap.gridmatrix[des_y][des_x]
+
+        # 如果有主，找到占领者信息
+        if des.OwnerId:
+            return False
+
+        else:
+            return True
+
+    def rat_fight(self, obj_id: uuid, rival_id: uuid) -> bool:
+        rival: Animal
+        obj: Animal
+
+        obj = self.animal_dict.get(obj_id)
+        rival = self.animal_dict.get(rival_id)
+
+        if rival.type == "tiger":
+            return False
+
+        if rival.type == "elephant":
+            return True
+
+        if rival.type == "rat":
+            if obj.Combat_Effectiveness > rival.Combat_Effectiveness:
+                return True
+
+            else:
+                return False
+
+    def tiger_fight(self, obj_id: uuid, rival_id: uuid) -> bool:
+        rival: Animal
+        obj: Animal
+
+        obj = self.animal_dict.get(obj_id)
+        rival = self.animal_dict.get(rival_id)
+
+        if rival.type == "elephant":
+            return False
+
+        if rival.type == "rat":
+            return True
+
+        if rival.type == "tiger":
+            if obj.Combat_Effectiveness > rival.Combat_Effectiveness:
+                return True
+
+            else:
+                return False
+
+    def elephant_fight(self, obj_id: uuid, rival_id: uuid) -> bool:
+        rival: Animal
+        obj: Animal
+
+        obj = self.animal_dict.get(obj_id)
+        rival = self.animal_dict.get(rival_id)
+
+        if rival.type == "rat":
+            return False
+
+        if rival.type == "tiger":
+            return True
+
+        if rival.type == "elephant":
+            if obj.Combat_Effectiveness > rival.Combat_Effectiveness:
+                return True
+
+            else:
+                return False
+
     def animal_move(self, obj_id: uuid, delta_x: int, delta_y: int):
         obj: Animal
         rival: Animal
@@ -374,24 +353,25 @@ class Animal_chess:
         des = self.gameMap.gridmatrix[des_y][des_x]
 
         # 首先查看范围测试结果
-        range_result = check_range(self.gameMap, position(des_x, des_y))
+        range_result = self.check_range(self.gameMap, position(des_x, des_y))
 
         if range_result:
 
             # 结果为真，则进行合法性测试
-            valid_result = check_valid(obj_id, delta_x, delta_y)
+            valid_result = self.check_valid(obj_id, delta_x, delta_y)
 
             if valid_result == 0:
 
                 # 结果为真，继续进行所有者测试
-                ### 此时可以删除旧地信息
-                owner_result = check_owner(obj_id, des_x, des_y)
+                ### 此时可以删除旧地信息，并修改动物坐标
+                owner_result = self.check_owner(des_x, des_y)
                 self.gameMap.gridmatrix[obj.pos.y][obj.pos.x].OwnerId = None
+                obj.pos = position(des_x, des_y)
 
                 if owner_result:
 
                     # 结果为真，说明此地无主，修改新旧两地信息
-                    self.gameMap.gridmatrix[des_y][des_x].OwnerId = obj_id  # TODO：修改数据的过程不完整，请检查
+                    self.gameMap.gridmatrix[des_y][des_x].OwnerId = obj_id
 
                 # 结果为假，通过id找到占领者
                 else:
@@ -400,45 +380,46 @@ class Animal_chess:
 
                     # 结果为假，则按动物类型进行打架测试
                     if obj.type == "rat":
-                        fight_result = rat_fight(obj_id, rival_id)
+                        fight_result = self.rat_fight(obj_id, rival_id)
 
                         # 赢了，修改数据，让它动起来，并修改对手状态为死
                         if fight_result:
-                            self.gameMap.gridmatrix[des_y][des_x].OwnerId = obj_id  # TODO：修改数据的过程不完整，请检查
+                            self.gameMap.gridmatrix[des_y][des_x].OwnerId = obj_id
                             rival.wasHunted()
 
                         else:
                             obj.wasHunted()
 
                     if obj.type == "tiger":
-                        fight_result = tiger_fight(obj_id, rival_id)
+                        fight_result = self.tiger_fight(obj_id, rival_id)
 
                         if fight_result:
-                            self.gameMap.gridmatrix[des_y][des_x].OwnerId = obj_id  # TODO：修改数据的过程不完整，请检查
+                            self.gameMap.gridmatrix[des_y][des_x].OwnerId = obj_id
                             rival.wasHunted()
 
                         else:
                             obj.wasHunted()
 
                     if obj.type == "elephant":
-                        fight_result = elephant_fight(obj_id, rival_id)
+                        fight_result = self.elephant_fight(obj_id, rival_id)
 
                         if fight_result:
-                            self.gameMap.gridmatrix[des_y][des_x].OwnerId = obj_id  # TODO：修改数据的过程不完整，请检查
+                            self.gameMap.gridmatrix[des_y][des_x].OwnerId = obj_id
                             rival.wasHunted()
 
                         else:
                             obj.wasHunted()
             # 洞化
             elif valid_result == 2:
-                self.gameMap.gridmatrix[obj.pos.y][obj.pos.x].OwnerId = None  # TODO：修改数据的过程不完整，请检查
+                self.gameMap.gridmatrix[obj.pos.y][obj.pos.x].OwnerId = None
+                obj.pos = position(des_x, des_y)
                 obj.getTrapped()
 
             # 游戏结束
-            # TODO:bug，返回函数valic_checkk()，检查是否存在valid_result==3 的情况
             elif valid_result == 3:
                 self.gameMap.gridmatrix[obj.pos.y][obj.pos.x].OwnerId = None
-                Animal_chess.end_the_game()
+                obj.pos = position(des_x, des_y)
+                self.end_the_game()
 
     def find_specific_animal(self, animal_type: str) -> Animal:
         """
@@ -528,15 +509,15 @@ class Animal_chess:
         self.animal_move(anim.id, delta_x, delta_y)
 
         # 数据校验
-        # self.game_situation()  # 展示全局结果
-        if self.gameMap.gridmatrix[orgin_y][orgin_x].OwnerId != None:
-            print("Error:没有清除原位置上的ownerID!!!")
-            print("*****************************************************")
-            return False
+        self.game_situation()  # 展示全局结果
 
         match grid_type:
             # 如果是洞，检查动物是否死掉，还有位置是否更新
             case "trap":
+                if self.gameMap.gridmatrix[orgin_y][orgin_x].OwnerId != None:
+                    print("Error:没有清除原位置上的ownerID!!!")
+                    print("*****************************************************")
+                    return False
                 if anim.status != AnimalStatus.dead:
                     print("Error:洞化后居然还活着？牛逼!!! check trap逻辑")
                     print("*************************************************")
@@ -554,6 +535,10 @@ class Animal_chess:
 
             # 如果是土地 or target，只需要检查是否到达目的地
             case "land" | "target":
+                if self.gameMap.gridmatrix[orgin_y][orgin_x].OwnerId != None:
+                    print("Error:没有清除原位置上的ownerID!!!")
+                    print("*****************************************************")
+                    return False
                 if anim.pos.x != grid_pos.x or anim.pos.y != grid_pos.y:
                     print("Error:没有走对位置，animal当前位置应是（" + str(grid_pos.x) + "," + str(grid_pos.y) + ",实际值是（" + str(
                         anim.pos.x) + "," + str(anim.pos.y) + "),请检查在land上move的逻辑")
@@ -563,16 +548,31 @@ class Animal_chess:
         print("************************success***************************")
         return True
 
+    def find_an_different_animal(self, obj_id: uuid, enemy_type: str) -> Animal:
+        for id in self.animal_dict:
+            if id != obj_id:
+                if self.animal_dict[id].type == enemy_type and self.animal_dict.get(id).status == AnimalStatus.alive:
+                    enemy = self.animal_dict[id]
+
+                    return enemy
+
+        print("can not find a specific animal!")
+
     def battle_test(self, obj_type: str, enemy_type: str, test_index: int) -> bool:
 
         # 找到一个符合条件的动物对象
-        obj = self.find_specific_animal(obj_type)
-        if obj is None:
-            return False
-        # 找到一个符合条件的动物对象
-        enemy = self.find_specific_animal(enemy_type)
-        if enemy is None:
-            return False
+        if obj_type != enemy_type:
+            obj = self.find_specific_animal(obj_type)
+            if obj is None:
+                return False
+            # 找到一个符合条件的动物对象
+            enemy = self.find_specific_animal(enemy_type)
+
+        if obj_type == enemy_type:
+            obj = self.find_specific_animal(obj_type)
+            enemy = self.find_an_different_animal(obj.id, enemy_type)
+            if enemy is None:
+                return False
 
         # 打印日志
         print("***********************Battle test " + str(test_index) + "**************************")
@@ -641,4 +641,3 @@ class Animal_chess:
     def end_the_game(self):
         pass
 
-        # TODO：其他动物类的判定方法(封装）

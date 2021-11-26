@@ -6,7 +6,7 @@ def animal_move_test(game: Animal_chess) -> bool:
     score += int(game.move_test("rat", "land", 1))
     score += int(game.move_test("rat", "river", 2) * 10)
     score += int(game.move_test("rat", "trap", 3) * 100)
-    score += int(game.move_test("rat", "target", 4) * 1000)
+    score += int(game.move_test("rat", "target", 4) * 1000)  ### 测试3与测试4顺序有误，出现动物跑到陷阱里不影响下一测试结果的情况
 
     if score == 1111:
         print("Congratulation!You have completed move functions!")

@@ -20,8 +20,8 @@ class BattleResult(Enum):
     描述战斗的结果
     win or loss
     """
-    win: 1
-    loss: 0
+    win = 1
+    loss = 0
 
 
 class GridProperty(Enum):
@@ -172,15 +172,15 @@ class Map:
 
         :return:a default map
         """
-        default_rows = 10
+        default_rows = 8
         default_cols = 10
 
         # 生成7x9的grid matrix，首先默认都是land
         grids = [[Grid.create_default_grid() for i in range(default_cols)] for i in range(default_rows)]
 
         # 设置river
-        for i in range(3, 6):
-            for j in range(2, 5):
+        for i in range(2, 5):
+            for j in range(3, 6):
                 grids[i][j].property = GridProperty.river
 
         # 随机生成target position，且要保证它不在河里
