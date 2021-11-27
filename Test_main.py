@@ -2,6 +2,7 @@ from Animal_chess import Animal_chess
 
 
 def animal_move_test(game: Animal_chess) -> bool:
+    # TODO:用十六进制字节，优化错误码
     score = 0
     score += int(game.move_test("rat", "land", 1))
     score += int(game.move_test("rat", "river", 2) * 10)
@@ -18,6 +19,7 @@ def animal_move_test(game: Animal_chess) -> bool:
 
 
 def animal_battle_test(game: Animal_chess) -> bool:
+    # TODO:用十六进制字节，优化错误码
     score = 0
     score += int(game.battle_test("rat", "rat", 1))
     score += int(game.battle_test("rat", "tiger", 2)) * 10

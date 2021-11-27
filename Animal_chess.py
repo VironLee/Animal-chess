@@ -232,6 +232,7 @@ class Animal_chess:
         print(situation)
 
     def check_range(self, game_map: Map, des: position) -> bool:
+        # TODO: 方法/函数中内的变量是否需要单独声明？有无更简洁的写法？
         des_x = des.x
         des_y = des.y
         row = game_map.rows
@@ -247,6 +248,7 @@ class Animal_chess:
             return True
 
     def check_valid(self, obj_id: uuid, delta_x: int, delta_y: int) -> int:
+        # TODO: 方法/函数中内的变量是否需要单独声明？有无更简洁的写法？
         obj: Animal
         obj = self.animal_dict.get(obj_id)
 
@@ -281,6 +283,7 @@ class Animal_chess:
             return True
 
     def rat_fight(self, obj_id: uuid, rival_id: uuid) -> bool:
+        # TODO: 方法/函数中内的变量是否需要单独声明？有无更简洁的写法？
         rival: Animal
         obj: Animal
 
@@ -301,6 +304,7 @@ class Animal_chess:
                 return False
 
     def tiger_fight(self, obj_id: uuid, rival_id: uuid) -> bool:
+        # TODO: 方法/函数中内的变量是否需要单独声明？有无更简洁的写法？
         rival: Animal
         obj: Animal
 
@@ -321,6 +325,7 @@ class Animal_chess:
                 return False
 
     def elephant_fight(self, obj_id: uuid, rival_id: uuid) -> bool:
+        # TODO: 方法/函数中内的变量是否需要单独声明？有无更简洁的写法？
         rival: Animal
         obj: Animal
 
@@ -341,6 +346,7 @@ class Animal_chess:
                 return False
 
     def animal_move(self, obj_id: uuid, delta_x: int, delta_y: int):
+        #TODO: 方法/函数中内的变量是否需要单独声明？有无更简洁的写法？
         obj: Animal
         rival: Animal
 
@@ -365,17 +371,17 @@ class Animal_chess:
                 # 结果为真，继续进行所有者测试
                 ### 此时可以删除旧地信息，并修改动物坐标
                 owner_result = self.check_owner(des_x, des_y)
-                self.gameMap.gridmatrix[obj.pos.y][obj.pos.x].OwnerId = None
+                self.gameMap.gridmatrix[obj.pos.y][obj.pos.x].OwnerId = None          #TODO：将清除Id的过程用类方法封装起来，避免属性直接暴露在外
                 obj.pos = position(des_x, des_y)
 
                 if owner_result:
 
                     # 结果为真，说明此地无主，修改新旧两地信息
-                    self.gameMap.gridmatrix[des_y][des_x].OwnerId = obj_id
+                    self.gameMap.gridmatrix[des_y][des_x].OwnerId = obj_id    #TODO：将清除Id的过程用类方法封装起来，避免属性直接暴露在外
 
                 # 结果为假，通过id找到占领者
                 else:
-                    rival_id = des.OwnerId
+                    rival_id = des.OwnerId  #TODO:检查变量声明是否必须
                     rival = self.animal_dict.get(rival_id)
 
                     # 结果为假，则按动物类型进行打架测试
@@ -384,7 +390,7 @@ class Animal_chess:
 
                         # 赢了，修改数据，让它动起来，并修改对手状态为死
                         if fight_result:
-                            self.gameMap.gridmatrix[des_y][des_x].OwnerId = obj_id
+                            self.gameMap.gridmatrix[des_y][des_x].OwnerId = obj_id  #TODO:使用类方法对对象属性进行操作，避免属性暴露在外
                             rival.wasHunted()
 
                         else:
@@ -394,7 +400,7 @@ class Animal_chess:
                         fight_result = self.tiger_fight(obj_id, rival_id)
 
                         if fight_result:
-                            self.gameMap.gridmatrix[des_y][des_x].OwnerId = obj_id
+                            self.gameMap.gridmatrix[des_y][des_x].OwnerId = obj_id  #TODO:使用类方法对对象属性进行操作，避免属性暴露在外
                             rival.wasHunted()
 
                         else:
@@ -404,21 +410,21 @@ class Animal_chess:
                         fight_result = self.elephant_fight(obj_id, rival_id)
 
                         if fight_result:
-                            self.gameMap.gridmatrix[des_y][des_x].OwnerId = obj_id
+                            self.gameMap.gridmatrix[des_y][des_x].OwnerId = obj_id  #TODO:使用类方法对对象属性进行操作，避免属性暴露在外
                             rival.wasHunted()
 
                         else:
                             obj.wasHunted()
             # 洞化
             elif valid_result == 2:
-                self.gameMap.gridmatrix[obj.pos.y][obj.pos.x].OwnerId = None
-                obj.pos = position(des_x, des_y)
+                self.gameMap.gridmatrix[obj.pos.y][obj.pos.x].OwnerId = None  #TODO:使用类方法对对象属性进行操作，避免属性暴露在外
+                obj.pos = position(des_x, des_y)  #TODO:使用类方法对对象属性进行操作，避免属性暴露在外
                 obj.getTrapped()
 
             # 游戏结束
             elif valid_result == 3:
                 self.gameMap.gridmatrix[obj.pos.y][obj.pos.x].OwnerId = None
-                obj.pos = position(des_x, des_y)
+                obj.pos = position(des_x, des_y) #TODO:使用类方法对对象属性进行操作，避免属性暴露在外
                 self.end_the_game()
 
     def find_specific_animal(self, animal_type: str) -> Animal:
@@ -479,7 +485,7 @@ class Animal_chess:
         Args:
             animal_type: 动物种类
             grid_type: 地块种类
-
+            test_index: 测试序号
         Returns:
 
         """
@@ -494,6 +500,7 @@ class Animal_chess:
             return False
 
         # 打印日志
+        #TODO:完善测试日志，使得每次测试结果清晰美观
         print("*****************MOVE Test " + str(test_index) + "************************")
         print("移动的动物对象是：")
         anim.common_detail()
@@ -637,7 +644,7 @@ class Animal_chess:
         print("*************************success************************")
         return True
 
-    # TBD
+    # TODO：完成End the game实现
     def end_the_game(self):
         pass
 
